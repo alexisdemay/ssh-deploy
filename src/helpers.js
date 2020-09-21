@@ -32,7 +32,14 @@ const validateFile = (filePath) => {
   }
 };
 
+const os = {
+  win: process.platform === 'win32',
+  linux: process.platform === 'linux',
+  mac: process.platform === 'darwin'
+};
+
 module.exports = {
+  os,
   validateDir,
   validateFile
 };

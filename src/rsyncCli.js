@@ -1,15 +1,34 @@
 const { sync: commandExists } = require('command-exists');
 const { get: nodeCmd } = require('node-cmd');
+const { os } = require('./helpers');
+
+const cmdInstallRsync = () => {
+  if (os.mac) {
+    return 'brew install rsync';
+  }
+
+  if (os.linux) {
+    return 'sudo apt-get --no-install-recommends install rsync';
+  }
+
+  return '';
+};
 
 const validateRsync = (callback = () => {}) => {
   const rsyncCli = commandExists('rsync');
 
   if (!rsyncCli) {
+    const command = cmdInstallRsync();
+    if (!command) {
+      console.error('⚠️ [CLI] Rsync is not installed. Please install `rsync` and try again. Aborting ... ');
+      process.abort();
+    }
+
     nodeCmd(
-      'sudo apt-get --no-install-recommends install rsync',
+      command,
       (err, data, stderr) => {
         if (err) {
-          console.log('⚠️ [CLI] Rsync installation failed. Aborting ... ', err.message);
+          console.error('⚠️ [CLI] Rsync installation failed. Aborting ... ', err.message);
           process.abort();
         } else {
           console.log('✅ [CLI] Rsync installed. \n', data, stderr);
