@@ -4,6 +4,14 @@ const {
   GITHUB_WORKSPACE
 } = process.env;
 
+const isExistingFileOrDir = (fileOrDir) => {
+  if (!existsSync(fileOrDir)) {
+    console.log(`[File] File ${fileOrDir} does not exist`);
+  } else {
+    console.log(`[File] File ${fileOrDir} exists`);
+  }
+}
+
 const validateDir = (dir) => {
   if (!existsSync(dir)) {
     console.log(`[SSH] Creating ${dir} dir in `, GITHUB_WORKSPACE);
@@ -33,6 +41,7 @@ const validateFile = (filePath) => {
 };
 
 module.exports = {
+  isExistingFileOrDir,
   validateDir,
   validateFile
 };

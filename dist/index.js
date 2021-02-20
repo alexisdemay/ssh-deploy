@@ -60,6 +60,14 @@ const {
   GITHUB_WORKSPACE
 } = process.env;
 
+const isExistingFileOrDir = (fileOrDir) => {
+  if (!existsSync(fileOrDir)) {
+    console.log(`[File] File ${fileOrDir} does not exist`);
+  } else {
+    console.log(`[File] File ${fileOrDir} exists`);
+  }
+}
+
 const validateDir = (dir) => {
   if (!existsSync(dir)) {
     console.log(`[SSH] Creating ${dir} dir in `, GITHUB_WORKSPACE);
@@ -89,6 +97,7 @@ const validateFile = (filePath) => {
 };
 
 module.exports = {
+  isExistingFileOrDir,
   validateDir,
   validateFile
 };
@@ -585,6 +594,7 @@ const nodeRsync = __webpack_require__(250);
 
 const { validateRsync, validateInputs } = __webpack_require__(735);
 const { addSshKey } = __webpack_require__(613);
+const { isExistingFileOrDir } = __webpack_require__(197);
 
 const {
   REMOTE_HOST, REMOTE_USER,
@@ -606,6 +616,9 @@ const sshDeploy = (() => {
     console.log(`[Rsync] Starting Rsync Action: ${src} to ${dest}`);
 
     try {
+      console.log(`[HELP] Check if the following file/folder ${src} exists`);
+      isExistingFileOrDir(src);
+
       // RSYNC COMMAND
       nodeRsync({
         src, dest, args, privateKey, port, ...defaultOptions

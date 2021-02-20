@@ -3,6 +3,7 @@ const nodeRsync = require('rsyncwrapper');
 
 const { validateRsync, validateInputs } = require('./rsyncCli');
 const { addSshKey } = require('./sshKey');
+const { isExistingFileOrDir } = require('./helpers');
 
 const {
   REMOTE_HOST, REMOTE_USER,
@@ -24,6 +25,9 @@ const sshDeploy = (() => {
     console.log(`[Rsync] Starting Rsync Action: ${src} to ${dest}`);
 
     try {
+      console.log(`[HELP] Check if the following file/folder ${src} exists`);
+      isExistingFileOrDir(src);
+
       // RSYNC COMMAND
       nodeRsync({
         src, dest, args, privateKey, port, ...defaultOptions
