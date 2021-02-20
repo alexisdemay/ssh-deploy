@@ -62,11 +62,12 @@ const {
 
 const isExistingFileOrDir = (fileOrDir) => {
   if (!existsSync(fileOrDir)) {
-    console.log(`[File] File ${fileOrDir} does not exist`);
-  } else {
-    console.log(`[File] File ${fileOrDir} exists`);
+    console.error(`⚠️ [Helper] File/directory ${fileOrDir} does not exist`);
+    return false;
   }
-}
+  console.log(`✅ [Helper] File/directory ${fileOrDir} exists`);
+  return true;
+};
 
 const validateDir = (dir) => {
   if (!existsSync(dir)) {
@@ -616,9 +617,6 @@ const sshDeploy = (() => {
     console.log(`[Rsync] Starting Rsync Action: ${src} to ${dest}`);
 
     try {
-      console.log(`[HELP] Check if the following file/folder ${src} exists`);
-      isExistingFileOrDir(src);
-
       // RSYNC COMMAND
       nodeRsync({
         src, dest, args, privateKey, port, ...defaultOptions
@@ -640,6 +638,12 @@ const sshDeploy = (() => {
   };
 
   const init = ({ src, dest, args, host = 'localhost', port, username, privateKeyContent }) => {
+    console.log(`Check that src file/directory exists: ${src}`);
+    const srcFileOrDirExists = isExistingFileOrDir(src);
+    if (!srcFileOrDirExists) {
+      process.abort();
+    }
+
     validateRsync(() => {
       const privateKey = addSshKey(privateKeyContent, DEPLOY_KEY_NAME || 'deploy_key');
       const remoteDest = `${username}@${host}:${dest}`;

@@ -6,11 +6,12 @@ const {
 
 const isExistingFileOrDir = (fileOrDir) => {
   if (!existsSync(fileOrDir)) {
-    console.log(`[File] File ${fileOrDir} does not exist`);
-  } else {
-    console.log(`[File] File ${fileOrDir} exists`);
+    console.error(`⚠️ [Helper] File/directory ${fileOrDir} does not exist`);
+    return false;
   }
-}
+  console.log(`✅ [Helper] File/directory ${fileOrDir} exists`);
+  return true;
+};
 
 const validateDir = (dir) => {
   if (!existsSync(dir)) {
