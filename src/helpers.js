@@ -6,10 +6,10 @@ const {
 
 const isExistingFileOrDir = (fileOrDir) => {
   if (!existsSync(fileOrDir)) {
-    console.error(`⚠️ [Helper] File/directory ${fileOrDir} does not exist`);
+    console.error(`⚠️ File/directory ${fileOrDir} does not exist`);
     return false;
   }
-  console.log(`✅ [Helper] File/directory ${fileOrDir} exists`);
+  console.log(`✅ File/directory ${fileOrDir} exists`);
   return true;
 };
 
