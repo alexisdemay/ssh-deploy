@@ -15,7 +15,8 @@ const {
 const defaultOptions = {
   ssh: true,
   sshCmdArgs: ['-o StrictHostKeyChecking=no'],
-  recursive: true
+  recursive: true,
+  dryRun: true
 };
 
 console.log('[general] GITHUB_WORKSPACE: ', GITHUB_WORKSPACE);
