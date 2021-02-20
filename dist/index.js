@@ -62,10 +62,10 @@ const {
 
 const isExistingFileOrDir = (fileOrDir) => {
   if (!existsSync(fileOrDir)) {
-    console.error(`⚠️ [Helper] File/directory ${fileOrDir} does not exist`);
+    console.error(`⚠️ File/directory ${fileOrDir} does not exist`);
     return false;
   }
-  console.log(`✅ [Helper] File/directory ${fileOrDir} exists`);
+  console.log(`✅ File/directory ${fileOrDir} exists`);
   return true;
 };
 
@@ -615,12 +615,11 @@ console.log('[general] GITHUB_WORKSPACE: ', GITHUB_WORKSPACE);
 const sshDeploy = (() => {
   const rsync = ({ privateKey, port, src, dest, args }) => {
     console.log(`[Rsync] Starting Rsync Action: ${src} to ${dest}`);
-    const hardcodedTarget = '/home/velocity';
 
     try {
       // RSYNC COMMAND
       nodeRsync({
-        src, hardcodedTarget, args, privateKey, port, ...defaultOptions
+        src, dest, args, privateKey, port, ...defaultOptions
       }, (error, stdout, stderr, cmd) => {
         if (error) {
           console.error('⚠️ [Rsync] error: ', error.message);

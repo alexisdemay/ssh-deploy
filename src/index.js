@@ -22,14 +22,12 @@ console.log('[general] GITHUB_WORKSPACE: ', GITHUB_WORKSPACE);
 
 const sshDeploy = (() => {
   const rsync = ({ privateKey, port, src, dest, args }) => {
-    const hardcodedTarget = '/home/velocity';
     console.log(`[Rsync] Starting Rsync Action: ${src} to ${dest}`);
-    console.log(`[Rsync] Starting Rsync Action: ${src} to ${hardcodedTarget}`);
 
     try {
       // RSYNC COMMAND
       nodeRsync({
-        src, hardcodedTarget, args, privateKey, port, ...defaultOptions
+        src, dest, args, privateKey, port, ...defaultOptions
       }, (error, stdout, stderr, cmd) => {
         if (error) {
           console.error('⚠️ [Rsync] error: ', error.message);
