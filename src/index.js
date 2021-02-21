@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 const nodeRsync = require('rsyncwrapper');
-const fs = require('fs');
 
 const { validateRsync, validateInputs } = require('./rsyncCli');
 const { addSshKey } = require('./sshKey');
@@ -9,15 +8,14 @@ const { isExistingFileOrDir } = require('./helpers');
 const {
   REMOTE_HOST, REMOTE_USER,
   REMOTE_PORT, SSH_PRIVATE_KEY, DEPLOY_KEY_NAME,
-  SOURCE, TARGET, ARGS,
+  SOURCE, TARGET, ARGS, DRY_RUN,
   GITHUB_WORKSPACE
 } = require('./inputs');
 
 const defaultOptions = {
   ssh: true,
   sshCmdArgs: ['-o StrictHostKeyChecking=no'],
-  recursive: true,
-  dryRun: true
+  recursive: true
 };
 
 console.log('[general] GITHUB_WORKSPACE: ', GITHUB_WORKSPACE);
@@ -25,14 +23,6 @@ console.log('[general] GITHUB_WORKSPACE: ', GITHUB_WORKSPACE);
 const sshDeploy = (() => {
   const rsync = ({ privateKey, port, src, dest, args }) => {
     console.log(`[Rsync] Starting Rsync Action: ${src} to ${dest}`);
-    fs.readFile('/home/runner/.ssh/deploy_key', 'utf8', (err, data) => {
-      if (err) {
-        console.error(err);
-      } else {
-        console.log(data);
-      }
-    });
-
     try {
       // RSYNC COMMAND
       nodeRsync({
@@ -84,7 +74,8 @@ const run = () => {
     host: REMOTE_HOST,
     port: REMOTE_PORT || '22',
     username: REMOTE_USER,
-    privateKeyContent: SSH_PRIVATE_KEY
+    privateKeyContent: SSH_PRIVATE_KEY,
+    dryRun: DRY_RUN || false
   });
 };
 

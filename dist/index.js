@@ -566,7 +566,7 @@ module.exports = require("path");
 /***/ 659:
 /***/ (function(module) {
 
-const inputNames = ['REMOTE_HOST', 'REMOTE_USER', 'REMOTE_PORT', 'SSH_PRIVATE_KEY', 'DEPLOY_KEY_NAME', 'SOURCE', 'TARGET', 'ARGS'];
+const inputNames = ['REMOTE_HOST', 'REMOTE_USER', 'REMOTE_PORT', 'SSH_PRIVATE_KEY', 'DEPLOY_KEY_NAME', 'SOURCE', 'TARGET', 'ARGS', 'DRY_RUN'];
 
 const inputs = {
   GITHUB_WORKSPACE: process.env.GITHUB_WORKSPACE
@@ -592,7 +592,6 @@ module.exports = require("util");
 /***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
 
 const nodeRsync = __webpack_require__(250);
-const fs = __webpack_require__(747);
 
 const { validateRsync, validateInputs } = __webpack_require__(735);
 const { addSshKey } = __webpack_require__(613);
@@ -601,15 +600,14 @@ const { isExistingFileOrDir } = __webpack_require__(197);
 const {
   REMOTE_HOST, REMOTE_USER,
   REMOTE_PORT, SSH_PRIVATE_KEY, DEPLOY_KEY_NAME,
-  SOURCE, TARGET, ARGS,
+  SOURCE, TARGET, ARGS, DRY_RUN,
   GITHUB_WORKSPACE
 } = __webpack_require__(659);
 
 const defaultOptions = {
   ssh: true,
   sshCmdArgs: ['-o StrictHostKeyChecking=no'],
-  recursive: true,
-  dryRun: true
+  recursive: true
 };
 
 console.log('[general] GITHUB_WORKSPACE: ', GITHUB_WORKSPACE);
@@ -617,14 +615,6 @@ console.log('[general] GITHUB_WORKSPACE: ', GITHUB_WORKSPACE);
 const sshDeploy = (() => {
   const rsync = ({ privateKey, port, src, dest, args }) => {
     console.log(`[Rsync] Starting Rsync Action: ${src} to ${dest}`);
-    fs.readFile('/home/runner/.ssh/deploy_key', 'utf8', (err, data) => {
-      if (err) {
-        console.error(err);
-      } else {
-        console.log(data);
-      }
-    });
-
     try {
       // RSYNC COMMAND
       nodeRsync({
@@ -676,7 +666,8 @@ const run = () => {
     host: REMOTE_HOST,
     port: REMOTE_PORT || '22',
     username: REMOTE_USER,
-    privateKeyContent: SSH_PRIVATE_KEY
+    privateKeyContent: SSH_PRIVATE_KEY,
+    dryRun: DRY_RUN || false
   });
 };
 
